@@ -1,6 +1,7 @@
 import 'package:chatapp/pages/login_page.dart';
 import 'package:chatapp/pages/usuarios_page.dart';
 import 'package:chatapp/services/auth_service.dart';
+import 'package:chatapp/services/socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,10 +26,14 @@ class LoadingPage extends StatelessWidget {
   Future checkLoginState(BuildContext context) async {
 
     final authService = Provider.of<AuthService>(context, listen: false);
+    final socketService = Provider.of<SocketService>(context);
     
-    final autenticado = await authService.isLoggedIn();
+    final autenticado = await authService.isLoggedIn(); //Comprobar si nuestro token es todavía válido
 
     if ( autenticado ) {
+      
+      socketService.connect();
+
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
